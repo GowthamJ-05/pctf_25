@@ -112,7 +112,6 @@ from pwn import *
 context.binary = ELF("path/to/binary")
 context.log_level = "debug"
 
-# got manually
 OFFSET = 6
 
 # from reversing pass()
