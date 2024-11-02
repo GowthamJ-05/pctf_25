@@ -59,7 +59,7 @@ __Note__ : `input[10]` in the decompiled code and fgets() that writes upto 32 by
 ![image](includes/images/note.png)
 
 
-We notice that some kind of ascii manipulation is done on each character of the input password string and then xor-ed against 0x35 (=53) to get another string which is compared to ``.
+We notice that some kind of ascii manipulation is done on each character of the input password string and then xor-ed against 0x35 (=53) to get another string which is compared to `cLVQjFMjcFDGQ`.
 
 ![image](includes/images/peculiar.png)
 
