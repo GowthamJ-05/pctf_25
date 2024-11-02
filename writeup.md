@@ -55,7 +55,7 @@ We shall rename few variables to analyze the pass() function
 ![image](includes/images/pass_rename.png)
 
 
-__Note__ : Due to presence of `input[10]` and fgets() that writes upto 32 bytes we might think that there is a bof vulnerability but from the listing window we confirm that bof is not a possibility as the `input` is placed 0x38 bytes above the rbp as shown below.
+__Note__ : `input[10]` in the decompiled code and fgets() that writes upto 32 bytes we might think that there is a bof vulnerability but from the listing window we confirm that bof is not a possibility as the `input` is placed 0x38 bytes above the rbp as shown below.
 ![image](includes/images/note.png)
 
 
