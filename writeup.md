@@ -86,11 +86,11 @@ To use the format string vulnerablity we need
 - the offset at which the string that we control is present
 - the GOT address of putc and printf() and init() address as well as value at the GOT address of system().
 
-the offset can be found using GDB (use `handle SIGALRM nostop noprint` to ignore the SIGALARM) 
+The offset can be found using GDB (use `handle SIGALRM nostop noprint` to ignore the SIGALARM) 
 
 ![image](includes/images/offset.png)
 
-the offset is found to be 6 as the `ABCD`(0x44434241) appears at the 6 the position.
+The offset is found to be 6 as the `ABCD`(0x44434241) appears at the 6 the position.
 
 Using Ghidra we get the GOT address of putc = `0x00404048`and printf = `0x00404020` and init() function = `0x00401448` . Value at the GOT address of system = `0x00401060`.
 
@@ -149,5 +149,5 @@ for file in files:
   with open(file, "wb") as f:
       f.write(b64d(encoded_file))
 ```
-We flag is present in the whispers_in_the_dark.pdf.
+The flag is present in the whispers_in_the_dark.pdf.
 
