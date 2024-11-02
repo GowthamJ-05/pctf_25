@@ -107,7 +107,7 @@ Also the presence of system("ls *.pdf") in init() suggests that the flag we are 
 
 So our final exploit looks like 
 
-``` 
+``` python
 from pwn import *
 context.binary = ELF("path/to/binary")
 context.log_level = "debug"
