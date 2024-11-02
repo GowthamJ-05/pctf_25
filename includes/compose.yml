@@ -1,0 +1,10 @@
+name: Vault of lost memories
+
+services:
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "7002:7001"
+    privileged: true
