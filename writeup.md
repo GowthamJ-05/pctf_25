@@ -25,37 +25,37 @@ We check whether the password field has a format string vulnerability. But it do
 
 ![image](includes/images/decompile_entry.png)
 
-We decompile it with Ghidra. Since the executable is stripped, Ghidra shows the entry function. The first parameter of the `__libc_start_main` function is the main function. We can rename it as such.
+We decompile it with `Ghidra`. Since the executable is stripped, `Ghidra` shows the entry function. The first parameter of the `__libc_start_main` function is the main function. We can rename it as such.
 
 ![image](includes/images/main.png)
 
-The main function has 3 functions FUN_00401216(), FUN_00401259(), FUN_00401448() (function FUN_00401230() is a callback to handle the alarm() and does nothing interesting)
+The main function has 3 functions `FUN_00401216()`, `FUN_00401259()`, `FUN_00401448()` (function `FUN_00401230()` is a callback to handle the alarm() and does nothing interesting)
 
 ![image](includes/images/print.png)
 
-FUN_00401216() just prints.
+`FUN_00401216()` just prints.
 
 ![image](includes/images/pass.png)
 
-FUN_00401259() asks for the password. On first look we can say that this function obfuscates the input password and compares it to `cLVQjFMjcFDGQ`. Rename as `pass()`
+`FUN_00401259()` asks for the password. On first look we can say that this function obfuscates the input password and compares it to `cLVQjFMjcFDGQ`. Rename as `pass()`
 
 ![image](includes/images/init.png)
 
-FUN_00401448() is executed after the password is verified and this function does something interesting. This function has a format string vulnerability just below `printf("hello");` and then there is a system function that only lists the files in the server. Rename as `init()`
+`FUN_00401448()` is executed after the password is verified and this function does something interesting. This function has a format string vulnerability just below `printf("hello");` and then there is a system function that only lists the files in the server. Rename as `init()`
 
 Based on these observations we can decide our course of action
-- first, we reverse the password in the pass() function.
-- second, we use the format string vulnerability to overwrite some libc function with the address of the init() function so that it loops arround and exploit the format string vuln as many times as required. We choose the putc function to overwrite and when the function loops back, we use format string vuln to overwrite the the GOT table entry of printf() with system so that in the next looping, we can enter `/bin/sh`. This converts the printf(s) to essentially work like system("/bin/sh").
+- first, we reverse the password in the `pass()` function.
+- second, we use the format string vulnerability to overwrite some libc function with the address of the `init()` function so that it loops arround and exploit the format string vuln as many times as required. We choose the `putc()` function to overwrite and when the function loops back, we use format string vuln to overwrite the the GOT table entry of `printf()` with system so that in the next looping, we can enter `/bin/sh`. This converts the `printf(s)` to essentially work like `system("/bin/sh")`.
 
 
 ### Step 3: Reversing the password
 
-We shall rename few variables to analyze the pass() function
+We shall rename few variables to analyze the `pass()` function
 
 ![image](includes/images/pass_rename.png)
 
 
-__Note__ : `input[10]` in the decompiled code and fgets() that writes upto 32 bytes we might think that there is a bof vulnerability but from the listing window we confirm that bof is not a possibility as the `input` is placed 0x38 bytes above the rbp as shown below.
+__Note__ : `input[10]` in the decompiled code and `fgets()` that writes upto 32 bytes we might think that there is a bof vulnerability but from the listing window we confirm that bof is not a possibility as the `input` is placed 0x38 bytes below the rbp as shown below.
 ![image](includes/images/note.png)
 
 
@@ -103,7 +103,7 @@ Using Ghidra we get the GOT address of putc = `0x00404048`and printf = `0x004040
 
 ### Step 5: Crafting the exploit
 
-Also the presence of system("ls *.pdf") in init() suggests that the flag we are looking is in a pdf format. We are required to read the pdf from the server. In order to read we'll convert the pdfs to base64, receive the bytes, decode it from base64 and write it as local files.
+Also the presence of `system("ls *.pdf")` in `init()` suggests that the flag we are looking is in a pdf format. We are required to read the pdf from the server. In order to read we'll convert the pdfs to base64, receive the bytes, decode it from base64 and write it as local files.
 
 So our final exploit looks like 
 
